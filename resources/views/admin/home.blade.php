@@ -28,11 +28,20 @@
             </div>
 
             <div class="card mt-5">
-                <div class="card-header">{{ __('Your Last 2 Posts:') }}</div>
+                <div class="card-header">
+
+                    @if (count($posts) >= 2)
+                        Your Last 2 posts:
+                    @elseif (count($posts) === 1)
+                        Your last post:
+                    @else
+                        You dont have post
+                    @endif
+                </div>
 
                 <div class="card-body">
 
-                    <table class="table table-light table-hover">
+                    <table class="table table-hover">
                         <thead>
                             <tr>
                             <th class="text-center" scope="col">#</th>
@@ -48,7 +57,7 @@
                                 <tr data-id="{{ $post->slug }}">
                                     <th class="text-center" scope="row">{{ $post->id }}</th>
                                     <td>{{ $post->title }}</td>
-                                    <td>{{  Str::limit($post->content, 50)  }}</td>
+                                    <td>{{  Str::limit($post->content, 30)  }}</td>
                                     <td>{{ date('d/m/Y', strtotime($post->created_at)) }}</td>
                                     <td>{{ date('d/m/Y', strtotime($post->updated_at)) }}</td>
                                     <td>
@@ -77,4 +86,17 @@
         </div>
     </div>
 </div>
+<section id="confirmation-overlay" class="overlay d-none">
+    <div class="popup">
+        <h1>Sei sicuro di voler eliminare?</h1>
+        <div class="d-flex justify-content-center">
+            <button id="btn-no" class="btn btn-primary me-3">NO</button>
+            <form method="POST" data-base="{{ route('admin.posts.destroy', '*****') }}">
+                @csrf
+                @method('DELETE')
+                <button class="btn btn-danger">SI</button>
+            </form>
+        </div>
+    </div>
+</section>
 @endsection
