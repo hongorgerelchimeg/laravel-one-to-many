@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Post;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -39,6 +40,8 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::paginate(25);
+
+        Session::put('posts_url', request()->fullUrl());
 
         return view('admin.posts.index', compact('posts'));
     }
@@ -103,7 +106,15 @@ class PostController extends Controller
 
         $post->update($request->all());
 
-        return redirect()->route('admin.posts.show', $post->slug);
+
+        return redirect()->route('admin.posts.show', compact('post'));
+
+
+        // if(session('posts_url')) {
+        //     return redirect(session('posts_url'));
+        // }
+
+        // return redirect()->route('admin.posts.index');
     }
 
     /**
